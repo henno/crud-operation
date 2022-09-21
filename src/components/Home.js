@@ -4,7 +4,6 @@ import React from "react";
 import Example from "./adduser";
 
 
-
 const Home = () => {
 
     const [posts, setPosts] = useState([]);
@@ -17,20 +16,16 @@ const Home = () => {
         getPosts();
     },[]);
 
-    const addPost = async () => {
-        const user = {name: 'username', username: 'New Username'};
-        await axios.post(api,user)
-        setPosts([user,...posts]);
-    };
+    const handleDelete = async (post)=>{
+        await axios.delete(api + "/" + post.id + post);
+        setPosts(posts.filter((p) => p.id !== post.id))
+    }
 
 
 
     return (
         <>
-
         <div className="container">
-
-
             <table className="table">
                 <thead>
                 <tr>
@@ -46,7 +41,7 @@ const Home = () => {
                         <td>{post.username}</td>
                         <td>{post.email}</td>
                         <td><button className="btn btn-info btn-sm"> update</button></td>
-                        <td><button className="btn btn-info btn-sm"> delete</button></td>
+                        <td><button className="btn btn-info btn-sm" onClick={() => handleDelete(post)}> delete</button></td>
                     </tr>
                 )}
                 </tbody>

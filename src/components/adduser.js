@@ -34,7 +34,6 @@ function Example(props) {
             <Button variant="primary" onClick={handleShow}>
                 Add NEW USER
             </Button>
-
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Add user</Modal.Title>
