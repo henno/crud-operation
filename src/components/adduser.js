@@ -26,40 +26,92 @@ function Example(props) {
             props.setPosts([state,...props.posts]);
         })
     }
+
+    function updateUser() {
+        const api = 'https://jsonplaceholder.typicode.com/users/' + props.post.id
+        let updatedPost = props.post
+        updatedPost.name = state.name
+        updatedPost.username = state.username
+        updatedPost.email = state.email
+        axios.put(api, updatedPost).then(() => {
+            props.setPosts([...props.posts]);
+        })
+    }
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    return (
-        <>
-            <Button variant="primary" onClick={handleShow}>
-                Add NEW USER
-            </Button>
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Add user</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <label htmlFor="name">Name:</label>
-                    <input type="text" className="form-control" name="name" onChange={handleChange} value={state.name} id="name"
-                           placeholder="Example input"></input>
-                    <label htmlFor="username">Username:</label>
-                    <input type="text" className="form-control" name="username" onChange={handleChange} value={state.username} id="username"
-                           placeholder="Another input"></input>
-                    <label htmlFor="email">Email:</label>
-                    <input type="text" className="form-control" name="email" onChange={handleChange} value={state.email} id="email"
-                           placeholder="Another input"></input>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={saveUser}>
-                        Add
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        </>
-    );
-
+    if(props.post)  {
+        return (
+            <>
+                <Button variant="primary" onClick={handleShow}>
+                    Edit User
+                </Button>
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Edit user</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <label htmlFor="name">Name:</label>
+                        <input type="text" className="form-control"  name="name" onChange={handleChange}
+                               value={state.name} id="name"
+                               placeholder={props.post.name}></input>
+                        <label htmlFor="username">Username:</label>
+                        <input type="text" className="form-control" name="username" onChange={handleChange}
+                               value={state.username} id="username"
+                               placeholder={props.post.username}></input>
+                        <label htmlFor="email">Email:</label>
+                        <input type="text" className="form-control" name="email" onChange={handleChange}
+                               value={state.email} id="email"
+                               placeholder={props.post.email}></input>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                        <Button variant="primary" onClick={updateUser}>
+                            Update
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </>
+        );
+    }
+    else{
+        return (
+            <>
+                <Button variant="primary" onClick={handleShow}>
+                    Add NEW USER
+                </Button>
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Add user</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <label htmlFor="name">Name:</label>
+                        <input type="text" className="form-control" name="name" onChange={handleChange}
+                               value={state.name} id="name"
+                               placeholder="name"></input>
+                        <label htmlFor="username">Username:</label>
+                        <input type="text" className="form-control" name="username" onChange={handleChange}
+                               value={state.username} id="username"
+                               placeholder="username"></input>
+                        <label htmlFor="email">Email:</label>
+                        <input type="text" className="form-control" name="email" onChange={handleChange}
+                               value={state.email} id="email"
+                               placeholder="email"></input>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                        <Button variant="primary" onClick={saveUser}>
+                            Add
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </>
+        );
+    }
 }
 export default Example;
