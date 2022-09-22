@@ -44,7 +44,7 @@ function Example(props) {
     if(props.post)  {
         return (
             <>
-                <Button variant="primary" onClick={handleShow}>
+                <Button variant="btn btn-info btn-sm" onClick={handleShow}>
                     Edit User
                 </Button>
                 <Modal show={show} onHide={handleClose}>
