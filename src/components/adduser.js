@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import axios from "axios";
+import usePlaceholder from "react-bootstrap/usePlaceholder";
 
 function Example(props) {
     const [show, setShow] = useState(false);
@@ -37,32 +38,29 @@ function Example(props) {
             props.setPosts([...props.posts]);
         })
     }
-
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
     if(props.post)  {
         return (
             <>
-                <Button variant="btn btn-info btn-sm" onClick={handleShow}>
+                <Button variant="primary" onClick={handleShow}>
                     Edit User
                 </Button>
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Edit user</Modal.Title>
+                        <Modal.Title>edit user</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <label htmlFor="name">Name:</label>
                         <input type="text" className="form-control"  name="name" onChange={handleChange}
-                               value={state.name} id="name"
-                               placeholder={props.post.name}></input>
+                               value={state.name} placeholder={props.post.name} id="name"></input>
                         <label htmlFor="username">Username:</label>
                         <input type="text" className="form-control" name="username" onChange={handleChange}
-                               value={state.username} id="username"
+                               value={state.username}  placeholder={props.post.username} id="username"
                                placeholder={props.post.username}></input>
                         <label htmlFor="email">Email:</label>
                         <input type="text" className="form-control" name="email" onChange={handleChange}
-                               value={state.email} id="email"
+                               value={state.email}  id="email"
                                placeholder={props.post.email}></input>
                     </Modal.Body>
                     <Modal.Footer>
