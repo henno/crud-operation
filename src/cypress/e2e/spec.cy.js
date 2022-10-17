@@ -1,4 +1,15 @@
-describe('empty spec', () => {
+describe('Test 1', () => {
+  it('Check for users', () => {
+    cy.visit('localhost:3000');
+
+    cy.get('.table').first().should('contain.text', 'Bret');
+
+    cy.get('.table').last().should('contain.text', 'Moriah.Stanton')
+
+  })
+})
+
+describe('test 2', () => {
   it('passes', () => {
     cy.visit('http://localhost:3000/');
     cy.get('html').click();
