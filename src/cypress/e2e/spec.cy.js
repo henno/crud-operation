@@ -9,7 +9,7 @@ describe('Test 1', () => {
   })
 })
 
-describe('test 2', () => {
+describe('Remove, update and add', () => {
   it('passes', () => {
     cy.visit('http://localhost:3000/');
     cy.get('html').click();
