@@ -67,7 +67,7 @@ function Example(props) {
                         <Button variant="secondary" onClick={handleClose}>
                             Close
                         </Button>
-                        <Button variant="primary" onClick={updateUser}>
+                        <Button type="submit" class="update" variant="primary" onClick={updateUser}>
                             Update
                         </Button>
                     </Modal.Footer>
@@ -78,7 +78,7 @@ function Example(props) {
     else{
         return (
             <>
-                <Button variant="primary" onClick={handleShow}>
+                <Button class="adduser" variant="primary" onClick={handleShow}>
                     Add NEW USER
                 </Button>
                 <Modal show={show} onHide={handleClose}>

@@ -39,7 +39,7 @@ const Home = () => {
                         <td>{post.username}</td>
                         <td>{post.email}</td>
                         <td><Example post={post} posts={posts} setPosts={setPosts} className="btn btn-info btn-sm"> update</Example></td>
-                        <td><button className="btn btn-danger btn-sm" onClick={() => handleDelete(post)}>Remove</button></td>
+                        <td><button className="remove btn btn-danger btn-sm" onClick={() => handleDelete(post)}>Remove</button></td>
                     </tr>
                 )}
                 </tbody>
