@@ -1,5 +1,5 @@
 name: ci
-on: [push]
+on: [commit]
 jobs:
   test:
     # use the reusable workflow to check out the code, install dependencies
