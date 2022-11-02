@@ -45,7 +45,7 @@ const Home = () => {
                 </tbody>
             </table>
             <Example posts={posts} setPosts={setPosts}/>
-        </div>
+        </div >
         </>
     );
 };

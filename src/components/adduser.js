@@ -67,9 +67,7 @@ function Example(props) {
                         <Button variant="secondary" onClick={handleClose}>
                             Close
                         </Button>
-                        <Button type="submit" class="update" variant="primary" onClick={updateUser}>
-                            Update
-                        </Button>
+                       
                     </Modal.Footer>
                 </Modal>
             </>
