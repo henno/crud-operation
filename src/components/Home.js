@@ -46,7 +46,7 @@ const Home = () => {
             </table>
             <Example posts={posts} setPosts={setPosts}/>
         </div >
-        </>
+        </ >
     );
 };
 export default Home;
