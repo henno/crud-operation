@@ -2,6 +2,7 @@ import axios from "axios";
 import Example from "./adduser";
 import { Client } from '@stomp/stompjs';
 import React from "react";
+import Logs from "./Logs";
 
 
 class Users extends React.Component {
@@ -23,16 +24,14 @@ class Users extends React.Component {
     }
 
     componentDidMount(){
-        fetch(this.state.api)
+        axios.get("http://localhost:8080/users", {auth: {
+                username: "user1",
+                password: "password"}} )
             .then(response => {
-                return response.json()
+                this.setState({users: response.data})
+                localStorage.setItem('users', JSON.stringify(response.data));
             })
-            .then(data => {
-                this.setState({users: data})
-                localStorage.setItem('users', JSON.stringify(data));
 
-
-            })
             .catch(error => {
                 console.log(localStorage.getItem('users'))
                 this.setState({users:JSON.parse(localStorage.getItem('users') || "")});
@@ -145,6 +144,7 @@ class Users extends React.Component {
                     </tbody>
                 </table>
                 <Example  users={this.state.users}  api={this.state.api} addUsers={this.addUsers} />
+                <Logs />
             </div >
         );
     }
