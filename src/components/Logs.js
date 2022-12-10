@@ -56,7 +56,16 @@ function Logs() {
                         </tr>
                         </thead>
                         <tbody>
+                        {logs.slice(-20).map((logs, index) =>
+                            <tr key={index}>
+                                <td>{logs.timestamp}</td>
+                                <td>{logs.request.method}</td>
+                                <td>{logs.request.uri}</td>
+                                <td>{}</td>
 
+
+                            </tr>
+                        )}
                         </tbody>
                     </table>
                 </Modal.Body>
