@@ -7,13 +7,7 @@ import session from "sockjs-client/lib/transport/receiver/jsonp";
 
 
 function Logs() {
-    const originalOpen = XMLHttpRequest.prototype.open;
 
-// Note: You should not use an arrow function here, since you need the "this" value scoped to the XMLHttpRequest object
-    XMLHttpRequest.prototype.open = function () {
-        console.log(...arguments);
-        originalOpen.call(this, ...arguments);
-    }
     const [fullscreen, setFullscreen] = useState(true);
     const [show, setShow] = useState(false);
     const [logs, setLogs] = useState([]);
@@ -22,12 +16,11 @@ function Logs() {
     }, []);
 
     const handleGET = () => {
-                axios.get("http://localhost:8080/actuator/httptrace", {auth: {
+                axios.get("http://localhost:8080/logs", {auth: {
                 username: "user1",
                 password: "password"}} )
             .then(response => {
-                setLogs(logs.concat(response.data.traces));
-                console.log(response.data.traces)
+                setLogs(logs.concat(response.data));
             })
 
     }
@@ -38,32 +31,42 @@ function Logs() {
     return (
 
         <>
-            <Button  className="me-2 mb-2" onClick={() => handleShow(true)}>
-                Full screen
+            <Button  className="mx-2 btn btn-info btn-sm" onClick={() => handleShow(true)}>
+                Logs
             </Button>
             <Modal show={show} fullscreen={fullscreen} onHide={() => setShow(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Modal</Modal.Title>
+                    <Modal.Title>Rest api logging</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <table className="table">
                         <thead>
                         <tr>
-                            <th>Timestamp</th>
+                            <th>Date</th>
                             <th>Method</th>
                             <th>Endpoint</th>
                             <th>ID</th>
+                            <th>Request Body</th>
                         </tr>
                         </thead>
                         <tbody>
                         {logs.slice(-20).map((logs, index) =>
                             <tr key={index}>
-                                <td>{logs.timestamp}</td>
-                                <td>{logs.request.method}</td>
-                                <td>{logs.request.uri}</td>
-                                <td>{}</td>
-
-
+                                <td>{logs.date}</td>
+                                <td>{logs.method}</td>
+                                <td>{logs.endpoint}</td>
+                                <td>{logs.id}</td>
+                                <td>
+                                    {
+                                        logs.body.name ? <p>name: {logs.body.name}</p> : <p></p>
+                                    }
+                                    {
+                                        logs.body.username ? <p>username: {logs.body.username}</p> : <p></p>
+                                    }
+                                    {
+                                        logs.body.email ? <p>email: {logs.body.email}</p> : <p></p>
+                                    }
+                                </td>
                             </tr>
                         )}
                         </tbody>
