@@ -21,6 +21,7 @@ function Logs() {
                 password: "password"}} )
             .then(response => {
                 setLogs(logs.concat(response.data));
+                console.log(response.data)
             })
 
     }
@@ -28,6 +29,12 @@ function Logs() {
         setFullscreen(breakpoint);
         setShow(true);
     }
+
+
+
+
+
+
     return (
 
         <>
@@ -47,6 +54,7 @@ function Logs() {
                             <th>Endpoint</th>
                             <th>ID</th>
                             <th>Request Body</th>
+                            <th>Old Info</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -65,6 +73,17 @@ function Logs() {
                                     }
                                     {
                                         logs.body.email ? <p>email: {logs.body.email}</p> : <p></p>
+                                    }
+                                </td>
+                                <td>
+                                    {
+                                        logs.oldBody.name ? <p>name: {logs.oldBody.name}</p> : <p></p>
+                                    }
+                                    {
+                                        logs.oldBody.username ? <p>username: {logs.oldBody.username}</p> : <p></p>
+                                    }
+                                    {
+                                        logs.oldBody.email ? <p>email: {logs.oldBody.email}</p> : <p></p>
                                     }
                                 </td>
                             </tr>

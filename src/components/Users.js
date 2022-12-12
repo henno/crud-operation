@@ -25,8 +25,8 @@ class Users extends React.Component {
 
     componentDidMount(){
         axios.get("http://localhost:8080/users", {auth: {
-                username: "user1",
-                password: "password"}} )
+                username:this.state.user,
+                password: this.state.pass}} )
             .then(response => {
                 this.setState({users: response.data})
                 localStorage.setItem('users', JSON.stringify(response.data));
@@ -75,6 +75,7 @@ class Users extends React.Component {
 
             client.subscribe('/topic/update', (msg) => {
                 if (msg.body) {
+                    console.log(msg.body)
                     var jsonBody = JSON.parse(msg.body)[0];
                     this.setState({users: this.state.users.map((users) => users.id === jsonBody.id ? jsonBody : users)})
 
@@ -107,12 +108,15 @@ class Users extends React.Component {
                 password: this.state.pass
             },
         mode: "no-cors"}).then( res => {
+            console.log(res.data)
             this.setState({users: this.state.users.filter(user => user.id !== id)});
         }).catch(error => {
             if (error.response.status === 429) {
                 alert("Too many requests!!");
             }
-            return error;
+            if (error.response.status === 403) {
+                alert("Forbidden");
+            };
         })
     }
 
@@ -136,14 +140,14 @@ class Users extends React.Component {
                             <td>{user.name}</td>
                             <td>{user.username}</td>
                             <td>{user.email}</td>
-                            <td className="d-flex justify-content-end" ><Example user={user} users={this.state.users}  api={this.state.api} editUsers={this.editUsers} ></Example>
+                            <td className="d-flex justify-content-end" ><Example user={user} users={this.state.users}  pass={this.state.pass} username={this.state.user} api={this.state.api} editUsers={this.editUsers} ></Example>
                                 <button className="remove btn btn-danger btn-sm  ms-3"  onClick={ () => this.deleteUsers(user.id)}>Remove</button>
                             </td>
                         </tr>
                     )}
                     </tbody>
                 </table>
-                <Example  users={this.state.users}  api={this.state.api} addUsers={this.addUsers} />
+                <Example  users={this.state.users}  api={this.state.api} pass={this.state.pass} username={this.state.user} addUsers={this.addUsers} />
                 <Logs />
             </div >
         );

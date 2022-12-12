@@ -32,13 +32,17 @@ function Example(props) {
         updatedPost.username = state.username
         updatedPost.email = state.email
         axios.put(api, state,{auth: {
-                username: "user1",
-                password: "password"}}
+                username: props.username,
+                password: props.pass}}
         ).then(r => {
         })
         .catch(error => {
-            console.log("Access Denied, You Don’t Have Permission To Access on This Request");
-            return error;
+            if (error.response.status === 429) {
+                alert("Too many requests!!");
+            }
+            if (error.response.status === 403) {
+                alert("Forbidden");
+            };
         })
     }
 
@@ -46,8 +50,8 @@ function Example(props) {
         const api = props.api
         state.id = props.users.length+1
         axios.post(api,state,  {auth: {
-                username: "user1",
-                password: "password"
+                username: props.username,
+                password: props.pass
             }
         }).then(r => {
 
