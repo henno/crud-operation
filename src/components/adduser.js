@@ -26,12 +26,12 @@ function Example(props) {
 
     function updateUser() {
         const api = props.api + "/" + props.user.id
-        let updatedPost = props.users
+        let updatedPost = { ...state };
         updatedPost.id = props.user.id
-        updatedPost.name = state.name
-        updatedPost.username = state.username
-        updatedPost.email = state.email
-        axios.put(api, state,{auth: {
+        updatedPost.name = !!state.name ? state.name : props.user.name
+        updatedPost.username = !!state.username ? state.username : props.user.username
+        updatedPost.email = !!state.email ? state.email : props.user.email
+        axios.put(api, updatedPost, {auth: {
                 username: props.username,
                 password: props.pass}}
         ).then(r => {

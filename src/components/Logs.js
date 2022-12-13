@@ -31,10 +31,6 @@ function Logs() {
     }
 
 
-
-
-
-
     return (
 
         <>
@@ -53,39 +49,28 @@ function Logs() {
                             <th>Method</th>
                             <th>Endpoint</th>
                             <th>ID</th>
-                            <th>Request Body</th>
+                            <th>New info</th>
                             <th>Old Info</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {logs.slice(-20).map((logs, index) =>
+                        {logs.slice(-20).map((log, index) =>
                             <tr key={index}>
-                                <td>{logs.date}</td>
-                                <td>{logs.method}</td>
-                                <td>{logs.endpoint}</td>
-                                <td>{logs.id}</td>
+                                <td>{log.date}</td>
+                                <td>{log.method}</td>
+                                <td>{log.endpoint}</td>
+                                <td>{log.id}</td>
                                 <td>
-                                    {
-                                        logs.body.name ? <p>name: {logs.body.name}</p> : <p></p>
-                                    }
-                                    {
-                                        logs.body.username ? <p>username: {logs.body.username}</p> : <p></p>
-                                    }
-                                    {
-                                        logs.body.email ? <p>email: {logs.body.email}</p> : <p></p>
-                                    }
+                                    { log.body && log.body.name ? <p>name: {log.body.name}</p> : <p></p> }
+                                    { log.body && log.body.username ? <p>username: {log.body.username}</p> : <p></p> }
+                                    { log.body && log.body.email ? <p>email: {log.body.email}</p> : <p></p> }
                                 </td>
                                 <td>
-                                    {
-                                        logs.oldBody.name ? <p>name: {logs.oldBody.name}</p> : <p></p>
-                                    }
-                                    {
-                                        logs.oldBody.username ? <p>username: {logs.oldBody.username}</p> : <p></p>
-                                    }
-                                    {
-                                        logs.oldBody.email ? <p>email: {logs.oldBody.email}</p> : <p></p>
-                                    }
+                                    { log.oldBody && log.oldBody.name ? <p>name: {log.oldBody.name}</p> : <p></p> }
+                                    { log.oldBody && log.oldBody.username ? <p>username: {log.oldBody.username}</p> : <p></p> }
+                                    { log.oldBody && log.oldBody.email ? <p>email: {log.oldBody.email}</p> : <p></p> }
                                 </td>
+
                             </tr>
                         )}
                         </tbody>

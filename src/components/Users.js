@@ -131,7 +131,6 @@ class Users extends React.Component {
                         <th>name</th>
                         <th>username</th>
                         <th>email</th>
-                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
