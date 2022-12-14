@@ -1,8 +1,10 @@
 import axios from "axios";
-import Example from "./adduser";
-import { Client } from '@stomp/stompjs';
+import {Client} from '@stomp/stompjs';
 import React from "react";
 import Logs from "./Logs";
+import UserFormModal from "./adduser";
+
+
 
 
 class Users extends React.Component {
@@ -12,79 +14,80 @@ class Users extends React.Component {
         super(props);
         this.state = {
             users: [],
-            api: process.env.REACT_APP_API_URL,
-            user: process.env.REACT_APP_AUTHENTICATION_USERNAME,
-            pass: process.env.REACT_APP_AUTHENTICATION_PASSWORD
         }
         this.deleteUsers = this.deleteUsers.bind(this);
         this.editUsers = this.editUsers.bind(this);
         this.addUsers = this.addUsers.bind(this);
-        this.andmed = this.andmed.bind(this)
+        this.getData = this.getData.bind(this);
 
     }
 
-    componentDidMount(){
-        axios.get("http://localhost:8080/users", {auth: {
-                username:this.state.user,
-                password: this.state.pass}} )
+    componentDidMount() {
+        axios.get("http://localhost:8080/users", {
+            auth: {
+                username: process.env.REACT_APP_AUTHENTICATION_USERNAME,
+                password: process.env.REACT_APP_AUTHENTICATION_PASSWORD}})
             .then(response => {
                 this.setState({users: response.data})
                 localStorage.setItem('users', JSON.stringify(response.data));
-            })
-
-            .catch(error => {
-                console.log(localStorage.getItem('users'))
-                this.setState({users:JSON.parse(localStorage.getItem('users') || "")});
-                console.log('request failed', error);
-                return error;
-            })
-        this.andmed()
+            }).catch(error => {
+            console.log('Connecting error: ', error)
+        })
+        this.WebSocketsLogic()
     }
+
 
     addUsers(user) {
-        this.setState({users: this.state.users.concat(user) })
+        this.setState({users: this.state.users.concat(user)})
     }
 
+    editUsers(user) {
+        this.setState({users: this.state.users.map((users) => users.id === user.id ? user : users)})
+    }
 
-    andmed() {
+    deleteUsers(id) {
+        this.setState({users: this.state.users.filter(user => user.id !== id)});
+    }
+
+    getData(Data) {
+        this.setState({users: Data.users})
+    }
+
+    WebSocketsLogic() {
         const SOCKET_URL = 'ws://localhost:8080/ws-message';
         let onConnected = () => {
             console.log("Connected!! ")
             client.subscribe('/topic/get', (msg) => {
                 if (msg.body) {
-                    var jsonBody = JSON.parse(msg.body);
-                    this.setState({users: jsonBody.users})
+                    var Data = JSON.parse(msg.body);
+                    this.getData(Data)
+
                 }
             });
-
             client.subscribe('/topic/post', (msg) => {
                 if (msg.body) {
-                    var jsonBody = JSON.parse(msg.body);
-                    this.setState({users: this.state.users.concat(jsonBody) })
-
+                    var newUser = JSON.parse(msg.body);
+                    this.addUsers(newUser)
                 }
             });
 
             client.subscribe('/topic/delete', (msg) => {
                 if (msg.body) {
                     var id = JSON.parse(msg.body)
-                    this.setState({users: this.state.users.filter(user => user.id !== id)});
-
+                    this.deleteUsers(id)
                 }
             });
 
             client.subscribe('/topic/update', (msg) => {
                 if (msg.body) {
-                    console.log(msg.body)
-                    var jsonBody = JSON.parse(msg.body)[0];
-                    this.setState({users: this.state.users.map((users) => users.id === jsonBody.id ? jsonBody : users)})
-
+                    var updatedUser = JSON.parse(msg.body)[0];
+                    this.editUsers(updatedUser)
                 }
             });
 
         }
         let onDisconnected = () => {
-            console.log("Disconnected!!")
+            console.log("disconnected")
         }
         const client = new Client({
             brokerURL: SOCKET_URL,
@@ -96,30 +99,15 @@ class Users extends React.Component {
         });
         client.activate();
     }
-    editUsers(user) {
-        this.setState({users: this.state.users.map((users) => users.id === user.id ? user : users)})
-    }
 
-    deleteUsers(id){
-        const api = this.state.api
-        console.log(this.state.user)
-        axios.delete(api + "/" + id, {auth: {
-                username: this.state.user,
-                password: this.state.pass
-            },
-        mode: "no-cors"}).then( res => {
-            console.log(res.data)
-            this.setState({users: this.state.users.filter(user => user.id !== id)});
-        }).catch(error => {
-            if (error.response.status === 429) {
-                alert("Too many requests!!");
+    handleDelete = (id) => {
+        axios.delete(process.env.REACT_APP_API_URL+ "/" + id, {
+            auth: {
+                username:process.env.REACT_APP_AUTHENTICATION_USERNAME,
+                password:process.env.REACT_APP_AUTHENTICATION_PASSWORD
             }
-            if (error.response.status === 403) {
-                alert("Forbidden");
-            };
         })
     }
-
 
     render() {
         return (
@@ -139,17 +127,21 @@ class Users extends React.Component {
                             <td>{user.name}</td>
                             <td>{user.username}</td>
                             <td>{user.email}</td>
-                            <td className="d-flex justify-content-end" ><Example user={user} users={this.state.users}  pass={this.state.pass} username={this.state.user} api={this.state.api} editUsers={this.editUsers} ></Example>
-                                <button className="remove btn btn-danger btn-sm  ms-3"  onClick={ () => this.deleteUsers(user.id)}>Remove</button>
+                            <td className="d-flex justify-content-end"><UserFormModal user={user} editUsers={this.editUsers}></UserFormModal>
+                                <button className="remove btn btn-danger btn-sm  ms-3" onClick={() => {
+                                    this.handleDelete(user.id)
+                                }}>Remove
+                                </button>
                             </td>
                         </tr>
                     )}
                     </tbody>
                 </table>
-                <Example  users={this.state.users}  api={this.state.api} pass={this.state.pass} username={this.state.user} addUsers={this.addUsers} />
-                <Logs />
-            </div >
+                <UserFormModal users={this.state.users} username={this.state.user} addUsers={this.addUsers}/>
+                <Logs/>
+            </div>
         );
     }
 }
+
 export default Users;

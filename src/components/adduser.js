@@ -5,7 +5,7 @@ import axios from "axios";
 
 
 
-function Example(props) {
+function UserFormModal(props) {
     const [show, setShow] = useState(false);
     const [state, setState] = React.useState({
         id: 0,
@@ -25,37 +25,33 @@ function Example(props) {
 
 
     function updateUser() {
-        const api = props.api + "/" + props.user.id
+        const api = process.env.REACT_APP_API_URL + "/" + props.user.id
         let updatedPost = { ...state };
+        console.log(props.user.id)
         updatedPost.id = props.user.id
         updatedPost.name = !!state.name ? state.name : props.user.name
         updatedPost.username = !!state.username ? state.username : props.user.username
         updatedPost.email = !!state.email ? state.email : props.user.email
         axios.put(api, updatedPost, {auth: {
-                username: props.username,
-                password: props.pass}}
-        ).then(r => {
-        })
+                username: process.env.REACT_APP_AUTHENTICATION_USERNAME,
+                password: process.env.REACT_APP_AUTHENTICATION_PASSWORD}})
         .catch(error => {
             if (error.response.status === 429) {
                 alert("Too many requests!!");
             }
             if (error.response.status === 403) {
                 alert("Forbidden");
-            };
-        })
+            }});
     }
 
     function saveUser() {
-        const api = props.api
-        state.id = props.users.length+1
-        axios.post(api,state,  {auth: {
-                username: props.username,
-                password: props.pass
-            }
-        }).then(r => {
-
-        })
+        const api = process.env.REACT_APP_API_URL
+        state.id = props.users.length + 1
+        axios.post(api, state, {
+            auth: {
+                username: process.env.REACT_APP_AUTHENTICATION_USERNAME,
+                password: process.env.REACT_APP_AUTHENTICATION_PASSWORD
+             }})
     }
 
 
@@ -132,4 +128,4 @@ function Example(props) {
         );
     }
 }
-export default Example;
+export default UserFormModal;
