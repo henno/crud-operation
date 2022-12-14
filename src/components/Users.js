@@ -2,14 +2,12 @@ import axios from "axios";
 import {Client} from '@stomp/stompjs';
 import React from "react";
 import Logs from "./Logs";
-import UserFormModal from "./adduser";
-
-
+import UserFormModal from "./UserFormModal";
+import HandleError from "./HandleError";
 
 
 class Users extends React.Component {
 
-    // Constructor
     constructor(props) {
         super(props);
         this.state = {
@@ -22,36 +20,13 @@ class Users extends React.Component {
 
     }
 
-    componentDidMount() {
-        axios.get("http://localhost:8080/users", {
-            auth: {
-                username: process.env.REACT_APP_AUTHENTICATION_USERNAME,
-                password: process.env.REACT_APP_AUTHENTICATION_PASSWORD}})
-            .then(response => {
-                this.setState({users: response.data})
-                localStorage.setItem('users', JSON.stringify(response.data));
-            }).catch(error => {
-            console.log('Connecting error: ', error)
-        })
-        this.WebSocketsLogic()
-    }
+    addUsers(user) {this.setState({users: this.state.users.concat(user)})}
 
+    editUsers(user) {this.setState({users: this.state.users.map((users) => users.id === user.id ? user : users)})}
 
-    addUsers(user) {
-        this.setState({users: this.state.users.concat(user)})
-    }
+    deleteUsers(id) {this.setState({users: this.state.users.filter(user => user.id !== id)});}
 
-    editUsers(user) {
-        this.setState({users: this.state.users.map((users) => users.id === user.id ? user : users)})
-    }
-
-    deleteUsers(id) {
-        this.setState({users: this.state.users.filter(user => user.id !== id)});
-    }
-
-    getData(Data) {
-        this.setState({users: Data.users})
-    }
+    getData(Data) {this.setState({users: Data.users})}
 
     WebSocketsLogic() {
         const SOCKET_URL = 'ws://localhost:8080/ws-message';
@@ -61,7 +36,6 @@ class Users extends React.Component {
                 if (msg.body) {
                     var Data = JSON.parse(msg.body);
                     this.getData(Data)
-
                 }
             });
             client.subscribe('/topic/post', (msg) => {
@@ -100,13 +74,30 @@ class Users extends React.Component {
         client.activate();
     }
 
+    componentDidMount() {
+        axios.get("http://localhost:8080/users", {
+            auth: {
+                username: process.env.REACT_APP_AUTHENTICATION_USERNAME,
+                password: process.env.REACT_APP_AUTHENTICATION_PASSWORD}})
+            .then(response => {
+                this.setState({users: response.data})
+                localStorage.setItem('users', JSON.stringify(response.data));
+            }).catch(error => {
+                HandleError(error)
+        })
+        this.WebSocketsLogic()
+    }
+
+
+
     handleDelete = (id) => {
-        axios.delete(process.env.REACT_APP_API_URL+ "/" + id, {
+        axios.delete(process.env.REACT_APP_API_URL + id, {
             auth: {
                 username:process.env.REACT_APP_AUTHENTICATION_USERNAME,
                 password:process.env.REACT_APP_AUTHENTICATION_PASSWORD
             }
-        })
+        }).catch(error => {
+            HandleError(error.response.status)})
     }
 
     render() {

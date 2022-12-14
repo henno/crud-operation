@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import axios from "axios";
-
+import errorHandling from "./HandleError";
+import HandleError from "./HandleError";
 
 
 function UserFormModal(props) {
@@ -25,9 +26,8 @@ function UserFormModal(props) {
 
 
     function updateUser() {
-        const api = process.env.REACT_APP_API_URL + "/" + props.user.id
+        const api = process.env.REACT_APP_API_URL  + props.user.id
         let updatedPost = { ...state };
-        console.log(props.user.id)
         updatedPost.id = props.user.id
         updatedPost.name = !!state.name ? state.name : props.user.name
         updatedPost.username = !!state.username ? state.username : props.user.username
@@ -36,22 +36,14 @@ function UserFormModal(props) {
                 username: process.env.REACT_APP_AUTHENTICATION_USERNAME,
                 password: process.env.REACT_APP_AUTHENTICATION_PASSWORD}})
         .catch(error => {
-            if (error.response.status === 429) {
-                alert("Too many requests!!");
-            }
-            if (error.response.status === 403) {
-                alert("Forbidden");
-            }});
+           HandleError(error.response.status)});
     }
 
     function saveUser() {
         const api = process.env.REACT_APP_API_URL
         state.id = props.users.length + 1
         axios.post(api, state, {
-            auth: {
-                username: process.env.REACT_APP_AUTHENTICATION_USERNAME,
-                password: process.env.REACT_APP_AUTHENTICATION_PASSWORD
-             }})
+            auth: {username: process.env.REACT_APP_AUTHENTICATION_USERNAME, password: process.env.REACT_APP_AUTHENTICATION_PASSWORD}})
     }
 
 

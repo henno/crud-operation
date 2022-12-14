@@ -18,8 +18,7 @@ function Logs() {
             auth: {
                 username: process.env.REACT_APP_AUTHENTICATION_USERNAME,
                 password: process.env.REACT_APP_AUTHENTICATION_PASSWORD
-            }})
-            .then(response => {setLogs(logs.concat(response.data));})
+            }}).then(response => {setLogs(logs.concat(response.data));})
     }
 
     function handleShow(breakpoint) {
@@ -28,7 +27,6 @@ function Logs() {
     }
 
     return (
-
         <>
             <Button className="mx-2 btn btn-info btn-sm" onClick={() => handleShow(true)}>
                 Logs
