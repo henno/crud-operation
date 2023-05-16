@@ -2,7 +2,6 @@
 Navigate to src folder in terminal and run commands:
 
     -npm install
-
     -npm start
 
 
